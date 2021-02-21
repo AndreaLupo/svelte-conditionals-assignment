@@ -54,7 +54,7 @@
 <h1>Password list</h1>
 
 <ul>
-	{#each passwords as currentPwd, currentIndex}
+	{#each passwords as currentPwd, currentIndex (currentPwd)}
 	<li class="remove" on:click="{removePassword.bind(this, currentIndex)}">{currentPwd}</li>
 	{:else}
 		<p>Input some passwords.</p>
