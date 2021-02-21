@@ -1,14 +1,20 @@
 <script>
 	let password = '';
 	let passwords = [];
-	$: tooShort = password.length < 5;
-	$: tooLong = password.length > 10;
-	function addPassword() {
-		if(tooShort || tooLong) {
-			return;
-		} 
 
-		passwords = [...passwords, password];
+	let passwordValidity = 'short';
+
+	$: if(password.trim().length < 5)
+			passwordValidity = 'short';
+		else if(password.trim().length > 10)
+			passwordValidity = 'long';
+		else 
+			passwordValidity = 'valid';
+
+	function addPassword() {
+		if(passwordValidity === 'valid'){
+			passwords = [...passwords, password];
+		}
 	}
 
 	function removePassword(currentIndex) {
@@ -37,9 +43,9 @@
 <input type="password" bind:value={password} />
 <button on:click="{addPassword}">Add password</button>
 
-{#if tooShort}
-	<p>Password too shorrt</p>
-{:else if tooLong}
+{#if passwordValidity === 'short'}
+	<p>Password too short</p>
+{:else if passwordValidity === 'long'}
 	<p>Password too long</p>
 {:else}
 	<p>Last password inserted: {password}</p>
@@ -49,7 +55,7 @@
 
 <ul>
 	{#each passwords as currentPwd, currentIndex}
-	<li class="remove" on:click="{() => removePassword(currentIndex)}">{currentPwd}</li>
+	<li class="remove" on:click="{removePassword.bind(this, currentIndex)}">{currentPwd}</li>
 	{:else}
 		<p>Input some passwords.</p>
 	{/each}
